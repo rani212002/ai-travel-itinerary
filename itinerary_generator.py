@@ -4,7 +4,7 @@ from transformers import pipeline
 generator = pipeline(
     "text-generation",
     model="gpt2",
-    max_length=600
+    # max_length=600
 )
 
 def generate_itinerary(destination, days, budget, travel_type):
