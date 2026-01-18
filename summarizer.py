@@ -2,7 +2,7 @@ from transformers import pipeline
 
 summarizer = pipeline(
     "summarization",
-    model="facebook/bart-large-cnn"
+    model="facebook/bart-large"
 )
 
 def summarize_itinerary(itinerary_text):

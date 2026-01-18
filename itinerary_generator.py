@@ -1,8 +1,16 @@
+import streamlit as st
+import torch
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-model_name = "google/flan-t5-large"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+@st.cache_resource
+def load_model():
+    model_name = "google/flan-t5-base"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    model.eval()
+    return tokenizer, model
+
+tokenizer, model = load_model()
 
 def generate_itinerary(destination, days, budget, travel_type):
     prompt = f"""
@@ -15,30 +23,25 @@ Travel details:
 - Travel type: {travel_type}
 
 IMPORTANT INSTRUCTIONS:
-- Replace all placeholders with REAL activities, places, restaurants, and tips.
-- Do NOT use words like "Activity 1", "Attraction 1", or "Restaurant 1".
-- Provide realistic and specific information.
+- Use real places, activities, food, and tips.
+- No placeholders like Activity 1 or Restaurant 1.
 
-Use the following format strictly:
+Format:
 
 Day 1:
 Daily Activities:
-- <real activity>
-- <real activity>
+- ...
 
 Tourist Attractions:
-- <real attraction>
-- <real attraction>
+- ...
 
 Food Suggestions:
-- <real restaurant or local food>
-- <real restaurant or local food>
+- ...
 
 Travel Tips:
-- <real tip>
-- <real tip>
+- ...
 
-Repeat this format for all days up to Day {days}.
+Repeat for all days.
 """
 
     inputs = tokenizer(
@@ -48,13 +51,4 @@ Repeat this format for all days up to Day {days}.
         max_length=1024
     )
 
-    outputs = model.generate(
-        **inputs,
-        max_new_tokens=300 * days,
-        do_sample=True,
-        temperature=0.9,
-        top_p=0.95
-    )
-
-    itinerary = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return itinerary
+    with torch.no_gr_
