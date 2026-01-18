@@ -6,10 +6,9 @@ generator = pipeline(
 )
 
 def generate_itinerary(prompt):
-    response = generator(
+    output = generator(
         prompt,
-        max_length=512,
+        max_length=600,
         do_sample=False
     )
-
-    return response[0]["generated_text"]
+    return output[0]["generated_text"]

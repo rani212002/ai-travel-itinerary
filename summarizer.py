@@ -6,14 +6,13 @@ summarizer = pipeline(
 )
 
 def summarize_itinerary(text):
-    if len(text.split()) < 40:
+    if len(text.split()) < 50:
         return text
 
     summary = summarizer(
         text,
         max_length=120,
-        min_length=50,
+        min_length=60,
         do_sample=False
     )
-
     return summary[0]["summary_text"]
