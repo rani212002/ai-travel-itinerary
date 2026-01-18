@@ -34,4 +34,3 @@ if generate_btn:
         # ---------------- Display Summarized Itinerary ----------------
         st.subheader("📝 Concise Summary")
         st.success(summary)
-`
