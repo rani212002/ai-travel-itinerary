@@ -8,34 +8,36 @@ model.eval()
 
 def generate_itinerary(destination, days, budget, travel_type):
     prompt = f"""
-List REAL places in {destination} in the format below.
+Fill in the details for the following travel itinerary using REAL places from {destination}.
+Do NOT explain anything. Just fill the bullets.
 
 Day 1:
 Daily Activities:
-- Visit a famous landmark in {destination}
-- Explore a popular area in {destination}
+- 
+- 
 
 Tourist Attractions:
-- One famous museum in {destination}
-- One famous historical place in {destination}
+- 
+- 
 
 Food Suggestions:
-- One famous restaurant in {destination}
-- One local food item in {destination}
+- 
+- 
 
 Travel Tips:
-- One useful travel tip for {destination}
-- One useful safety tip for {destination}
+- 
+- 
 """
 
-    inputs = tokenizer(prompt, return_tensors="pt", truncation=True)
+    inputs = tokenizer(prompt, return_tensors="pt")
 
     with torch.no_grad():
         outputs = model.generate(
             **inputs,
-            max_new_tokens=200,
+            max_new_tokens=180,
             do_sample=False,
-            num_beams=4
+            num_beams=5,
+            repetition_penalty=1.2
         )
 
     return tokenizer.decode(outputs[0], skip_special_tokens=True)
