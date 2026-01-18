@@ -5,10 +5,9 @@ from openai import OpenAI
 
 # Load API key from .env file
 load_dotenv()
-
 # Create OpenAI client
 client = OpenAI(
-    api_key=os.getenv("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")
+    api_key=os.getenv("OPENAI_API_KEY")
 )
 
 def generate_itinerary(destination, days, budget, travel_type):

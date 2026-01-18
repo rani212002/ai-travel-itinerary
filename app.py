@@ -1,9 +1,13 @@
 import streamlit as st
 from itinerary_generator import generate_itinerary
 from utils import validate_inputs
+from dotenv import load_dotenv
+import os
 
 st.set_page_config(page_title="AI Travel Itinerary Generator", layout="wide")
 st.title("✈️ AI Travel Itinerary Generator")
+api_key = os.getenv("OPENAI_API_KEY")
+
 
 st.sidebar.header("Enter Your Travel Preferences")
 destination = st.sidebar.text_input("Destination")
