@@ -27,10 +27,10 @@ if generate_btn:
             summary = summarize_itinerary(detailed_itinerary)
 
         # ---------------- Display Detailed Itinerary ----------------
-        st.subheader("📋 Detailed Travel Itinerary")
+        # st.subheader("📋 Detailed Travel Itinerary")
         # Use markdown to preserve line breaks
         st.markdown(detailed_itinerary.replace("\n", "  \n"))
 
         # ---------------- Display Summarized Itinerary ----------------
         st.subheader("📝 Concise Summary")
-        st.success(summary)
+        # st.success(summary)

@@ -1,34 +1,41 @@
 import torch
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
-generator = pipeline(
-    "text2text-generation",
-    model="facebook/bart-large-cnn",
-    device=-1  # CPU
-)
+model_name = "google/flan-t5-small"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+model.eval()
 
 def generate_itinerary(destination, days, budget, travel_type):
     prompt = f"""
-Create a travel plan for {destination}.
+List REAL places in {destination} in the format below.
 
-Include:
-Daily Activities,
-Tourist Attractions,
-Food Suggestions,
-Travel Tips.
+Day 1:
+Daily Activities:
+- Visit a famous landmark in {destination}
+- Explore a popular area in {destination}
 
-Use REAL places from {destination}.
-Return in clear bullet points.
+Tourist Attractions:
+- One famous museum in {destination}
+- One famous historical place in {destination}
+
+Food Suggestions:
+- One famous restaurant in {destination}
+- One local food item in {destination}
+
+Travel Tips:
+- One useful travel tip for {destination}
+- One useful safety tip for {destination}
 """
+
+    inputs = tokenizer(prompt, return_tensors="pt", truncation=True)
 
     with torch.no_grad():
-        output = generator(
-            prompt,
-            max_length=250,
-            do_sample=False
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=200,
+            do_sample=False,
+            num_beams=4
         )
 
-    return f"""
-Day 1:
-{output[0]['generated_text']}
-"""
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
