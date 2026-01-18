@@ -39,10 +39,10 @@ def generate_itinerary(destination, days, budget, travel_type):
     Repeat this format for all days.
     """
     
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role":"user","content":prompt}],
-        max_tokens=1500
-    )
+    response = openai.chat.completions.create(
+    model="gpt-4",
+    messages=[{"role": "user", "content": prompt}],
+    max_tokens=1500
+)
     
     return response.choices[0].message.content
