@@ -1,14 +1,14 @@
 from transformers import pipeline
 
-summarizer = pipeline(
-    "summarization",
-    model="facebook/bart-large-cnn"
+generator = pipeline(
+    "text2text-generation",
+    model="google/flan-t5-small"
 )
 
-def summarize_itinerary(text):
-    return summarizer(
-        text[:1200],
-        max_length=120,
-        min_length=60,
+def generate_itinerary(prompt: str) -> str:
+    result = generator(
+        prompt,
+        max_length=512,
         do_sample=False
-    )[0]["summary_text"]
+    )
+    return result[0]["generated_text"]
