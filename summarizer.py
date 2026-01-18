@@ -7,10 +7,9 @@ summarizer = pipeline(
 )
 
 def summarize_itinerary(text):
-    summary = summarizer(
-        text[:2000],  # ⬅ prevent token overflow
-        max_length=150,
+    return summarizer(
+        text[:1500],
+        max_length=130,
         min_length=60,
         do_sample=False
-    )
-    return summary[0]["summary_text"]
+    )[0]["summary_text"]
