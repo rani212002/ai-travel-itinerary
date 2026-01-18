@@ -5,15 +5,15 @@ summarizer = pipeline(
     model="facebook/bart-large-cnn"
 )
 
-def summarize_itinerary(text: str) -> str:
-    if len(text.split()) < 80:
+def summarize_itinerary(text):
+    if len(text.split()) < 40:
         return text
 
     summary = summarizer(
-        text[:1800],
-        max_length=180,
-        min_length=80,
+        text,
+        max_length=120,
+        min_length=50,
         do_sample=False
-    )[0]["summary_text"]
+    )
 
-    return summary
+    return summary[0]["summary_text"]
