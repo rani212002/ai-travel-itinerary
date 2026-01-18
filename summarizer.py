@@ -2,14 +2,15 @@ from transformers import pipeline
 
 summarizer = pipeline(
     "summarization",
-    model="facebook/bart-large-cnn"
+    model="facebook/bart-large-cnn",
+    device=-1
 )
 
 def summarize_itinerary(text):
     summary = summarizer(
-        text,
-        max_length=200,
-        min_length=80,
+        text[:2000],  # ⬅ prevent token overflow
+        max_length=150,
+        min_length=60,
         do_sample=False
     )
     return summary[0]["summary_text"]
