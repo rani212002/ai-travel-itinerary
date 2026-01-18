@@ -1,65 +1,114 @@
-# # # modules/itinerary_generator.py
-# # import os
-# # from dotenv import load_dotenv
+# # # # modules/itinerary_generator.py
+# # # import os
+# # # from dotenv import load_dotenv
 
+# # # from groq import Groq
+# # # load_dotenv()
+
+# # # client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+# # # def generate_itinerary(destination, days, budget, travel_type):
+# # #     prompt = f"""
+# # #     Create a {days}-day travel itinerary for {destination}.
+# # #     Budget: {budget}, Travel Type: {travel_type}.
+    
+# # #     Format the itinerary exactly like this:
+
+# # #     Day 1:
+# # #     Morning:
+# # #     • Activity 1
+# # #     • Activity 2
+
+# # #     Afternoon:
+# # #     • Activity 1
+
+# # #     Evening:
+# # #     • Activity 1
+
+# # #     Tourist Attractions:
+# # #     • Attraction 1
+# # #     • Attraction 2
+
+# # #     Food Recommendations:
+# # #     • Food 1
+# # #     • Food 2
+
+# # #     Travel Tips:
+# # #     • Tip 1
+# # #     • Tip 2
+
+# # #     Repeat this format for all days.
+# # #     """
+    
+# # #     response = client.chat.completions.create(
+# # #         model="llama3-70b-8192",
+# # #         messages=[
+# # #             {"role": "user", "content": prompt}
+# # #         ],
+# # #         temperature=0.7,
+# # #         max_tokens=1500
+# # #     )
+# # # #     response = openai.chat.completions.create(
+# # # #     model="gpt-4",
+# # # #     messages=[{"role": "user", "content": prompt}],
+# # # #     max_tokens=1500
+# # # # )
+
+    
+# # #     return response.choices[0].message.content
+# # import os
 # # from groq import Groq
-# # load_dotenv()
 
 # # client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 # # def generate_itinerary(destination, days, budget, travel_type):
 # #     prompt = f"""
-# #     Create a {days}-day travel itinerary for {destination}.
-# #     Budget: {budget}, Travel Type: {travel_type}.
-    
-# #     Format the itinerary exactly like this:
+# # You are a professional travel planner.
 
-# #     Day 1:
-# #     Morning:
-# #     • Activity 1
-# #     • Activity 2
+# # Generate a detailed {days}-day travel itinerary for {destination}.
 
-# #     Afternoon:
-# #     • Activity 1
+# # Travel details:
+# # - Budget: {budget}
+# # - Travel type: {travel_type}
 
-# #     Evening:
-# #     • Activity 1
+# # Provide REAL places, activities, restaurants, and tips.
+# # Do NOT use placeholders.
 
-# #     Tourist Attractions:
-# #     • Attraction 1
-# #     • Attraction 2
+# # Format:
 
-# #     Food Recommendations:
-# #     • Food 1
-# #     • Food 2
+# # Day 1:
+# # Daily Activities:
+# # - ...
 
-# #     Travel Tips:
-# #     • Tip 1
-# #     • Tip 2
+# # Tourist Attractions:
+# # - ...
 
-# #     Repeat this format for all days.
-# #     """
-    
+# # Food Suggestions:
+# # - ...
+
+# # Travel Tips:
+# # - ...
+
+# # Repeat for all days up to Day {days}.
+# # """
+
 # #     response = client.chat.completions.create(
 # #         model="llama3-70b-8192",
 # #         messages=[
 # #             {"role": "user", "content": prompt}
 # #         ],
-# #         temperature=0.7,
+# #         temperature=0.8,
 # #         max_tokens=1500
 # #     )
-# # #     response = openai.chat.completions.create(
-# # #     model="gpt-4",
-# # #     messages=[{"role": "user", "content": prompt}],
-# # #     max_tokens=1500
-# # # )
 
-    
 # #     return response.choices[0].message.content
-# import os
+# import streamlit as st
 # from groq import Groq
 
-# client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+# # Create Groq client using Streamlit secrets
+# client = Groq(
+#     api_key=st.secrets["GROQ_API_KEY"]
+# )
 
 # def generate_itinerary(destination, days, budget, travel_type):
 #     prompt = f"""
@@ -74,7 +123,7 @@
 # Provide REAL places, activities, restaurants, and tips.
 # Do NOT use placeholders.
 
-# Format:
+# Format EXACTLY like this:
 
 # Day 1:
 # Daily Activities:
@@ -105,49 +154,25 @@
 import streamlit as st
 from groq import Groq
 
-# Create Groq client using Streamlit secrets
-client = Groq(
-    api_key=st.secrets["GROQ_API_KEY"]
-)
+# 🔍 DEBUG: force error if key missing
+if "GROQ_API_KEY" not in st.secrets:
+    st.error("GROQ_API_KEY not found in Streamlit secrets")
+    st.stop()
+
+api_key = st.secrets["GROQ_API_KEY"]
+
+# 🔍 DEBUG: show key prefix (safe)
+st.write("Groq key prefix:", api_key[:4])
+
+client = Groq(api_key=api_key)
 
 def generate_itinerary(destination, days, budget, travel_type):
-    prompt = f"""
-You are a professional travel planner.
-
-Generate a detailed {days}-day travel itinerary for {destination}.
-
-Travel details:
-- Budget: {budget}
-- Travel type: {travel_type}
-
-Provide REAL places, activities, restaurants, and tips.
-Do NOT use placeholders.
-
-Format EXACTLY like this:
-
-Day 1:
-Daily Activities:
-- ...
-
-Tourist Attractions:
-- ...
-
-Food Suggestions:
-- ...
-
-Travel Tips:
-- ...
-
-Repeat for all days up to Day {days}.
-"""
-
     response = client.chat.completions.create(
-        model="llama3-70b-8192",
+        model="llama3-8b-8192",  # smaller model for testing
         messages=[
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": "Say hello"}
         ],
-        temperature=0.8,
-        max_tokens=1500
+        max_tokens=50
     )
 
     return response.choices[0].message.content
