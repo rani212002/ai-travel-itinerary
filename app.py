@@ -38,20 +38,24 @@ if st.button("Generate Itinerary"):
             itinerary = generate_itinerary(prompt)
             summary = summarize_itinerary(itinerary)
 
-        # ------------------ DISPLAY OUTPUT ------------------
-        st.divider()
-        st.subheader("📌 Detailed Day-wise Itinerary")
+      st.divider()
+st.subheader("📌 Detailed Day-wise Itinerary")
 
-        # Split itinerary by days and format
-        day_blocks = itinerary.split("Day ")
+# DEBUG: show raw output first
+with st.expander("🔍 Raw AI Output (Debug)", expanded=False):
+    st.text(itinerary)
 
-        for block in day_blocks:
-            if block.strip():
-                day_title = "Day " + block.split(":")[0]
-                day_content = block.replace(block.split(":")[0] + ":", "")
+# Formatted display
+day_blocks = itinerary.split("Day ")
 
-                with st.expander(day_title, expanded=False):
-                    st.markdown(day_content)
+for block in day_blocks:
+    if block.strip().startswith(tuple(str(i) for i in range(1, 15))):
+        day_title = "Day " + block.split(":")[0]
+        day_content = block.replace(block.split(":")[0] + ":", "").strip()
+
+        with st.expander(day_title, expanded=True):
+            st.markdown(day_content)
+
 
         # ------------------ SUMMARY SECTION ------------------
         st.divider()
