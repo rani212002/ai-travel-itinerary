@@ -167,10 +167,40 @@ st.write("Groq key prefix:", api_key[:4])
 client = Groq(api_key=api_key)
 
 def generate_itinerary(destination, days, budget, travel_type):
+    prompt = f"""
+You are a professional travel planner.
+
+Generate a detailed {days}-day travel itinerary for {destination}.
+
+Travel details:
+- Budget: {budget}
+- Travel type: {travel_type}
+
+Provide REAL places, activities, restaurants, and tips.
+Do NOT use placeholders.
+
+Format EXACTLY like this:
+
+Day 1:
+Daily Activities:
+- ...
+
+Tourist Attractions:
+- ...
+
+Food Suggestions:
+- ...
+
+Travel Tips:
+- ...
+
+Repeat for all days up to Day {days}.
+"""
+
     response = client.chat.completions.create(
-        model="llama3-8b-8192",  # smaller model for testing
+        model="groq/compound-mini",  # smaller model for testing
         messages=[
-            {"role": "user", "content": "Say hello"}
+            {"role": "user", "content": prompt}
         ],
         max_tokens=50
     )
