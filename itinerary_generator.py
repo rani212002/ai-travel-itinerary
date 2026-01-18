@@ -1,11 +1,10 @@
 # modules/itinerary_generator.py
 import os
-import requests
+import openai
 from dotenv import load_dotenv
 
 load_dotenv()
-GROK_API_KEY = os.getenv("GROK_API_KEY")
-GROK_API_URL = "https://api.grok.com/v1/generate"
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def generate_itinerary(destination, days, budget, travel_type):
     prompt = f"""
@@ -40,19 +39,10 @@ def generate_itinerary(destination, days, budget, travel_type):
     Repeat this format for all days.
     """
     
-    headers = {
-        "Authorization": f"Bearer {GROK_API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "model": "gpt-4",
-        "prompt": prompt,
-        "max_tokens": 1500
-    }
-
-    response = requests.post(GROK_API_URL, json=payload, headers=headers)
-    if response.status_code == 200:
-        return response.json().get("text", "")
-    else:
-        return f"Error: {response.status_code}, {response.text}"
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role":"user","content":prompt}],
+        max_tokens=1500
+    )
+    
+    return response.choices[0].message.content
