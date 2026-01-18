@@ -12,7 +12,6 @@ destination = st.sidebar.text_input("Destination")
 days = st.sidebar.number_input("Number of Days", min_value=1, max_value=30, value=5)
 budget = st.sidebar.selectbox("Budget Level", ["Low", "Medium", "High"])
 travel_type = st.sidebar.selectbox("Travel Type", ["Solo", "Family", "Adventure", "Relaxation"])
-
 generate_btn = st.sidebar.button("Generate Itinerary")
 
 # ---------------- Main Logic ----------------
@@ -27,9 +26,12 @@ if generate_btn:
         with st.spinner("Summarizing itinerary..."):
             summary = summarize_itinerary(detailed_itinerary)
 
-        # ---------------- Display ----------------
+        # ---------------- Display Detailed Itinerary ----------------
         st.subheader("📋 Detailed Travel Itinerary")
-        st.markdown(detailed_itinerary.replace("\n", "  \n"))  # preserves line breaks
+        # Use markdown to preserve line breaks
+        st.markdown(detailed_itinerary.replace("\n", "  \n"))
 
+        # ---------------- Display Summarized Itinerary ----------------
         st.subheader("📝 Concise Summary")
         st.success(summary)
+`
