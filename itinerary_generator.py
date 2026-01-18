@@ -1,43 +1,38 @@
-import torch
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from openai import OpenAI
 
-model_name = "google/flan-t5-small"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-model.eval()
+client = OpenAI(api_key="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")
 
 def generate_itinerary(destination, days, budget, travel_type):
     prompt = f"""
-Fill in the details for the following travel itinerary using REAL places from {destination}.
-Do NOT explain anything. Just fill the bullets.
+Create a {days}-day travel itinerary for {destination}.
+
+Return the output EXACTLY in this format:
 
 Day 1:
 Daily Activities:
-- 
-- 
+- Visit a famous landmark in {destination}
+- Explore a popular local area
 
 Tourist Attractions:
-- 
-- 
+- One famous museum or monument in {destination}
+- One well-known tourist place in {destination}
 
 Food Suggestions:
-- 
-- 
+- One famous restaurant in {destination}
+- One popular local food item
 
 Travel Tips:
-- 
-- 
+- One practical travel tip
+- One safety tip
+
+Use REAL places and food from {destination}.
+Do NOT add explanations.
 """
 
-    inputs = tokenizer(prompt, return_tensors="pt")
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.4
+    )
 
-    with torch.no_grad():
-        outputs = model.generate(
-            **inputs,
-            max_new_tokens=180,
-            do_sample=False,
-            num_beams=5,
-            repetition_penalty=1.2
-        )
-
-    return tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return response.choices[0].message.content
