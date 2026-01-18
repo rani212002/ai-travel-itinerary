@@ -3,8 +3,10 @@ import os
 import openai
 from dotenv import load_dotenv
 
+from groq import Groq
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 def generate_itinerary(destination, days, budget, travel_type):
     prompt = f"""
@@ -39,10 +41,19 @@ def generate_itinerary(destination, days, budget, travel_type):
     Repeat this format for all days.
     """
     
-    response = openai.chat.completions.create(
-    model="gpt-4",
-    messages=[{"role": "user", "content": prompt}],
-    max_tokens=1500
-)
+    response = client.chat.completions.create(
+        model="llama3-70b-8192",
+        messages=[
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7,
+        max_tokens=1500
+    )
+#     response = openai.chat.completions.create(
+#     model="gpt-4",
+#     messages=[{"role": "user", "content": prompt}],
+#     max_tokens=1500
+# )
+
     
     return response.choices[0].message.content
