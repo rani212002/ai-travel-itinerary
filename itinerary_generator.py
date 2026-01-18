@@ -51,4 +51,13 @@ Repeat for all days.
         max_length=1024
     )
 
-    with torch.no_gr_
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=min(800, 150 * days),
+            do_sample=True,
+            temperature=0.8,
+            top_p=0.9
+        )
+
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
