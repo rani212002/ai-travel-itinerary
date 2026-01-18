@@ -1,17 +1,35 @@
 def build_itinerary_prompt(destination, days, budget, travel_type):
     return f"""
-You are a professional travel planner.
+You are an expert travel planner.
 
-Create a {days}-day detailed travel itinerary for:
-Destination: {destination}
-Budget: {budget}
-Travel Type: {travel_type}
+Generate a {days}-day travel itinerary for the destination: {destination}.
 
-Include for each day:
-- Morning, Afternoon, Evening activities
-- Tourist attractions
-- Local food recommendations
-- Travel tips
+User Preferences:
+- Budget Level: {budget}
+- Travel Type: {travel_type}
 
-Make it well-structured and realistic.
+STRICT FORMAT (do not change format):
+
+Day 1:
+Morning:
+Afternoon:
+Evening:
+Tourist Attractions:
+Food Recommendations:
+Travel Tips:
+
+Day 2:
+Morning:
+Afternoon:
+Evening:
+Tourist Attractions:
+Food Recommendations:
+Travel Tips:
+
+(Continue same format until Day {days})
+
+Rules:
+- Be realistic and detailed
+- Use bullet points inside each section
+- Keep language simple and clear
 """

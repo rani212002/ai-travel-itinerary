@@ -1,34 +1,64 @@
 import streamlit as st
-
+import warnings
 
 from itinerary_generator import generate_itinerary
 from summarizer import summarize_itinerary
 from prompt_templates import build_itinerary_prompt
-st.write("✅ App started successfully   ")
 
+# ------------------ BASIC SETUP ------------------
+warnings.filterwarnings("ignore")
 
-st.set_page_config(page_title="AI Travel Itinerary Generator", layout="wide")
+st.set_page_config(
+    page_title="AI Travel Itinerary Generator",
+    layout="wide"
+)
+
+st.write("✅ App started successfully")
 
 st.title("🌍 AI Travel Itinerary Generator")
+st.markdown(
+    "Generate **personalized, day-wise travel itineraries** using Generative AI."
+)
 
-destination = st.text_input("Destination")
+# ------------------ USER INPUTS ------------------
+destination = st.text_input("Destination", placeholder="e.g. Paris")
 days = st.slider("Trip Duration (Days)", 1, 14, 5)
 budget = st.selectbox("Budget Level", ["Low", "Medium", "High"])
 travel_type = st.selectbox(
     "Travel Type", ["Solo", "Family", "Adventure", "Relaxation"]
 )
 
+# ------------------ GENERATE BUTTON ------------------
 if st.button("Generate Itinerary"):
-    if not destination:
-        st.warning("Please enter a destination")
+    if not destination.strip():
+        st.warning("⚠️ Please enter a destination")
     else:
-        with st.spinner("Generating itinerary..."):
+        with st.spinner("✈️ Generating your personalized itinerary..."):
             prompt = build_itinerary_prompt(destination, days, budget, travel_type)
             itinerary = generate_itinerary(prompt)
             summary = summarize_itinerary(itinerary)
 
-        st.subheader("📌 Detailed Itinerary")
-        st.write(itinerary)
+        # ------------------ DISPLAY OUTPUT ------------------
+        st.divider()
+        st.subheader("📌 Detailed Day-wise Itinerary")
 
-        st.subheader("📝 Summarized Plan")
+        # Split itinerary by days and format
+        day_blocks = itinerary.split("Day ")
+
+        for block in day_blocks:
+            if block.strip():
+                day_title = "Day " + block.split(":")[0]
+                day_content = block.replace(block.split(":")[0] + ":", "")
+
+                with st.expander(day_title, expanded=False):
+                    st.markdown(day_content)
+
+        # ------------------ SUMMARY SECTION ------------------
+        st.divider()
+        st.subheader("📝 Concise Travel Summary")
         st.success(summary)
+
+        # ------------------ FOOTER ------------------
+        st.caption(
+            "🤖 Powered by HuggingFace Generative AI models | Built with Streamlit"
+        )
