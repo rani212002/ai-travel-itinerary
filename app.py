@@ -1,6 +1,6 @@
 # app.py
 import streamlit as st
-from modules.itinerary_generator import generate_itinerary
+from itinerary_generator import generate_itinerary
 
 st.title("AI Travel Itinerary Generator")
 
